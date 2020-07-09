@@ -1,12 +1,15 @@
-const filterNames = [`all`, `overdue`, `today`, `today`, `today`, `archive`];
+const filterNames = [
+  `all`, `overdue`, `today`, `favorites`, `repeating`, `archive`
+];
 
 const generateFilters = () => {
-  return filterNames.map((item) => {
+  return filterNames.map((it) => {
     return {
-      name: item,
+      name: it,
       count: Math.floor(Math.random() * 10),
     };
   });
 };
 
-export { generateFilters };
+
+export {generateFilters};
