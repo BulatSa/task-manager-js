@@ -1,9 +1,10 @@
 import { MONTH_NAMES, DAYS, COLORS } from "../const.js";
-import { formatTime } from "../utils.js";
+import { createElement, formatTime } from "../utils.js";
 
 const createColorsMarkup = (colors, currentColor) => {
-  return colors.map((color, index) => {
-    return (`
+  return colors
+    .map((color, index) => {
+      return `
       <input
         type="radio"
         id="color-${color}-${index}"
@@ -17,8 +18,9 @@ const createColorsMarkup = (colors, currentColor) => {
         class="card__color card__color--${color}"
         >${color}</label
       >
-    `)
-  }).join(`\n`);
+    `;
+    })
+    .join(`\n`);
 };
 
 const createRepeatingDaysMarkup = (days, repeatingDays) => {
@@ -59,7 +61,7 @@ const createTaskEditTemplate = (task) => {
 
   const colorsMarkup = createColorsMarkup(COLORS, color);
   const repeatingDaysMarkup = createRepeatingDaysMarkup(DAYS, repeatingDays);
-  
+
   return `
   <article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
     <form class="card__form" method="get">
@@ -135,4 +137,25 @@ const createTaskEditTemplate = (task) => {
   `;
 };
 
-export { createTaskEditTemplate };
+export default class TaskEdit {
+  constructor(task) {
+    this._element = null;
+    this._task = task;
+  }
+
+  getTemplate() {
+    return createTaskEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
