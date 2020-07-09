@@ -1,12 +1,13 @@
-import { createBoardTemplate } from "./components/board";
-import { createFilterTemplate } from "./components/filter";
-import { createLoadMoreButtonTemplate } from "./components/load-more-button";
-import { createTaskEditTemplate } from "./components/task-edit";
-import { createTaskTemplate } from "./components/task";
-import { createSiteMenuTemplate } from "./components/site-menu";
-import { createSortingTemplate } from "./components/sort";
-import { generateFilters } from "./mock/filter";
+import BoardComponent from "./components/board";
+import FilterComponent from "./components/filter";
+import LoadMoreButtonComponent from "./components/load-more-button";
+import TaskEditComponent from "./components/task-edit";
+import TaskComponent from "./components/task";
+import TaskComponents from "./components/tasks";
+import SiteMenuComponent from "./components/site-menu";
+import SortComponent from "./components/sort";
 import { generateTasks } from "./mock/task";
+import { generateFilters } from "./mock/filter";
 import { render, RenderPosition } from "./utils";
 
 const TASK_COUNT = 22;
