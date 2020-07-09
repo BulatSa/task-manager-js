@@ -7,14 +7,11 @@ import { createSiteMenuTemplate } from "./components/site-menu";
 import { createSortingTemplate } from "./components/sort";
 import { generateFilters } from "./mock/filter";
 import { generateTasks } from "./mock/task";
+import { render, RenderPosition } from "./utils";
 
 const TASK_COUNT = 22;
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
-
-const render = (container, componentHTML, where = "beforeend") => {
-  container.insertAdjacentHTML(where, componentHTML);
-};
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
@@ -34,8 +31,9 @@ render(taskListElement, createTaskEditTemplate(tasks[0]));
 
 let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
 
-tasks.slice(1, showingTasksCount)
-  .forEach((task)=> render(taskListElement, createTaskTemplate(task)))
+tasks
+  .slice(1, showingTasksCount)
+  .forEach((task) => render(taskListElement, createTaskTemplate(task)));
 
 render(boardElement, createLoadMoreButtonTemplate());
 
