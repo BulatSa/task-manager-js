@@ -9,7 +9,7 @@ import SiteMenuComponent from "./components/site-menu.js";
 import SortComponent from "./components/sort.js";
 import { generateTasks } from "./mock/task.js";
 import { generateFilters } from "./mock/filter.js";
-import { render, RenderPosition } from "./utils/render.js";
+import { render, replace, RenderPosition } from "./utils/render.js";
 
 const TASK_COUNT = 20;
 const SHOWING_TASKS_COUNT_ON_START = 8;
@@ -17,14 +17,16 @@ const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 const renderTask = (taskListElement, task) => {
   const replaceTaskToEdit = () => {
-    taskListElement.replaceChild(
+    replace(
+      taskListElement,
       taskEditComponent.getElement(),
       taskComponent.getElement()
     );
   };
 
   const replaceEditToTask = () => {
-    taskListElement.replaceChild(
+    replace(
+      taskListElement,
       taskComponent.getElement(),
       taskEditComponent.getElement()
     );
