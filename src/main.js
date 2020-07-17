@@ -58,7 +58,7 @@ const renderTask = (taskListElement, task) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  render(taskListElement, taskComponent, RenderPosition.BEFOREEND);
 };
 
 const renderBoard = (boardComponent, tasks) => {
@@ -67,7 +67,7 @@ const renderBoard = (boardComponent, tasks) => {
   if (isAllTasksArchived) {
     render(
       boardComponent.getElement(),
-      new NoTasksComponent().getElement(),
+      new NoTasksComponent(),
       RenderPosition.BEFOREEND
     );
     return;
@@ -75,12 +75,12 @@ const renderBoard = (boardComponent, tasks) => {
 
   render(
     boardComponent.getElement(),
-    new SortComponent().getElement(),
+    new SortComponent(),
     RenderPosition.BEFOREEND
   );
   render(
     boardComponent.getElement(),
-    new TasksComponent().getElement(),
+    new TasksComponent(),
     RenderPosition.BEFOREEND
   );
 
@@ -96,7 +96,7 @@ const renderBoard = (boardComponent, tasks) => {
   const loadMoreButtonComponent = new LoadMoreButtonComponent();
   render(
     boardComponent.getElement(),
-    loadMoreButtonComponent.getElement(),
+    loadMoreButtonComponent,
     RenderPosition.BEFOREEND
   );
 
@@ -123,15 +123,15 @@ const filters = generateFilters();
 
 render(
   siteHeaderElement,
-  new SiteMenuComponent().getElement(),
+  new SiteMenuComponent(),
   RenderPosition.BEFOREEND
 );
 render(
   siteMainElement,
-  new FilterComponent(filters).getElement(),
+  new FilterComponent(filters),
   RenderPosition.BEFOREEND
 );
 
 const boardComponent = new BoardComponent();
-render(siteMainElement, boardComponent.getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 renderBoard(boardComponent, tasks);
