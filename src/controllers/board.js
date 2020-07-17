@@ -3,7 +3,7 @@ import NoTasksComponent from "../components/no-tasks.js";
 import TaskEditComponent from "../components/task-edit.js";
 import TaskComponent from "../components/task.js";
 import TasksComponent from "../components/tasks.js";
-import SortComponent from "../components/sort.js";
+import SortComponent, {SortType} from "../components/sort.js";
 import { render, replace, remove, RenderPosition } from "../utils/render.js";
 
 const SHOWING_TASKS_COUNT_ON_START = 8;
@@ -42,6 +42,25 @@ const renderTask = (taskListElement, task) => {
   });
 
   render(taskListElement, taskComponent, RenderPosition.BEFOREEND);
+
+  const getSortedTasks = (tasks, sortType, from, to) => {
+    let sortedTasks = [];
+    const showingTasks = tasks.slice();
+
+    switch (sortType) {
+      case sortType.DATE_UP:
+        sortedTasks = showingTasks.sort((a, b) => a.dueDate + b.dueDate);
+        break;
+      case sortType.DATE_DOWN:
+        sortedTasks = showingTasks.sort((a, b) => a.dueDate - b.dueDate);
+        break;
+      case sortType.DEFAULT:
+        sortedTasks = showingTasks;
+        break;
+    }
+
+    return sortedTasks.slice(from, to);
+  }
 };
 
 export default class BoardController {
@@ -96,12 +115,14 @@ export default class BoardController {
 
     renderLoadMoreButton();
 
-    this._sortComponent.setSortTypeChangeHandler(() => {
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
       showingTasksCount = SHOWING_TASKS_COUNT_BY_BUTTON;
 
+      const sortedTasks = getSortedTasks(tasks, sortType, 0, showingTasksCount);
+
       taskListElement.innerHTML = ``;
-      
-      tasks.slice(0, showingTasksCount).forEach((task) => {
+
+      sortedTasks.slice(0, showingTasksCount).forEach((task) => {
         renderTask(taskListElement, task);
       });
       renderLoadMoreButton();
