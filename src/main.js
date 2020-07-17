@@ -17,19 +17,11 @@ const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 const renderTask = (taskListElement, task) => {
   const replaceTaskToEdit = () => {
-    replace(
-      taskListElement,
-      taskEditComponent.getElement(),
-      taskComponent.getElement()
-    );
+    replace(taskEditComponent, taskComponent);
   };
 
   const replaceEditToTask = () => {
-    replace(
-      taskListElement,
-      taskComponent.getElement(),
-      taskEditComponent.getElement()
-    );
+    replace(taskComponent, taskEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -120,16 +112,8 @@ const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 const tasks = generateTasks(TASK_COUNT);
 const filters = generateFilters();
 
-render(
-  siteHeaderElement,
-  new SiteMenuComponent(),
-  RenderPosition.BEFOREEND
-);
-render(
-  siteMainElement,
-  new FilterComponent(filters),
-  RenderPosition.BEFOREEND
-);
+render(siteHeaderElement, new SiteMenuComponent(), RenderPosition.BEFOREEND);
+render(siteMainElement, new FilterComponent(filters), RenderPosition.BEFOREEND);
 
 const boardComponent = new BoardComponent();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
