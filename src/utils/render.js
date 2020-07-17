@@ -24,3 +24,7 @@ export const createElement = (template) => {
 export const replace = (parent, newElement, oldElement) => {
   parent.replace(newElement, oldElement);
 };
+
+export const remove = (element) => {
+  element.remove();
+}
