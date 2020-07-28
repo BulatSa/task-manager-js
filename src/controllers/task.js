@@ -3,7 +3,7 @@ import TaskEditComponent from "../components/task-edit.js";
 import { render, replace, RenderPosition } from "../utils/render.js";
 
 export default class TaskController {
-  constructor(contianer) {
+  constructor(container) {
     this._container = container;
 
     this._taskComponent = null;
