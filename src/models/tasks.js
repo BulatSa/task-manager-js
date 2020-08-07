@@ -9,7 +9,7 @@ export default class Tasks {
     return this._tasks;
   }
 
-  setTasks() {
+  setTasks(tasks) {
     this._tasks = Array.from(tasks);
     this._callHandlers(this._dataChangeHandlers);
   }
@@ -18,14 +18,10 @@ export default class Tasks {
     const index = this._tasks.findIndex((it) => it.id === id);
 
     if (index === -1) {
-      return;
+      return false;
     }
 
-    this._tasks = [].concat(
-      this._tasks.slice(0, index),
-      task,
-      this._tasks.slice(index + 1)
-    );
+    this._tasks = [].concat(this._tasks.slice(0, index), task, this._tasks.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
 
