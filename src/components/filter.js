@@ -1,5 +1,13 @@
 import AbstractClass from "./abstract-component.js";
 
+const FILTER_ID_PREFIX = `filter__`;
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
+
+
 const createFilterMarkup = (filter, isChecked) => {
   const { name, count } = filter;
   return `<input
@@ -16,7 +24,7 @@ const createFilterMarkup = (filter, isChecked) => {
 
 const createFilterTemplate = (filters) => {
   const filterMarkup = filters
-    .map((item, i) => createFilterMarkup(item, i === 0))
+    .map((item) => createFilterMarkup(item, item.checked === 0))
     .join(`\n`);
   return `<section class="main__filter filter container">
     ${filterMarkup}
@@ -31,5 +39,12 @@ export default class Filter extends AbstractClass {
 
   getTemplate() {
     return createFilterTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      handler(filterName);
+    });
   }
 }

@@ -40,7 +40,6 @@ export default class FilterComponent {
   }
 
   _onFilterChange(filterType) {
-    this._tasksModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 
