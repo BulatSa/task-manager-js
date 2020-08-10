@@ -19,7 +19,7 @@ export default class FilterComponent {
 
   render() {
     const container = this._container;
-    const allTasks = this._tasksModel.getTask();
+    const allTasks = this._tasksModel.getTaskAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
@@ -40,6 +40,7 @@ export default class FilterComponent {
   }
 
   _onFilterChange(filterType) {
+    this._tasksModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 
