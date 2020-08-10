@@ -1,9 +1,9 @@
 import FilterComponent from "../components/filter.js";
 import { FilterType } from "../const.js";
 import { render, replace, RenderPosition } from "../utils/render.js";
-import { getTaskByFilter } from "../utils/filter.js";
+import { getTasksByFilter } from "../utils/filter.js";
 
-export default class FilterComponent {
+export default class FilterController {
   constructor(container, tasksModel) {
     this._container = container;
     this._tasksModel = tasksModel;
@@ -19,11 +19,11 @@ export default class FilterComponent {
 
   render() {
     const container = this._container;
-    const allTasks = this._tasksModel.getTaskAll();
+    const allTasks = this._tasksModel.getTasksAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        count: getTaskByFilter(allTasks, filterType).length,
+        count: getTasksByFilter(allTasks, filterType).length,
         checked: filterType === this._activeFilterType,
       };
     });
