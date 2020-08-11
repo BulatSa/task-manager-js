@@ -5,10 +5,6 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const isRepeating = (repeatingDays) => {
-  return Object.values(repeatingDays).some(Boolean);
-};
-
 const createColorsMarkup = (colors, currentColor) => {
   return colors
     .map((color, index) => {
