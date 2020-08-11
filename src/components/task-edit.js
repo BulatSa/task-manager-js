@@ -142,6 +142,24 @@ const createTaskEditTemplate = (task, options = {}) => {
     </article>`;
 };
 
+const parseFormData = (formData) => {
+  const repeatingDays = DAYS.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+  const date = formData.get(`date`);
+
+  return {
+    description: formData.get(`text`),
+    color: formData.get(`color`),
+    dueDate: date ? new Date(date) : null,
+    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+  };
+};
+
 export default class TaskEdit extends AbstractSmartComponent {
   constructor(task) {
     super();
@@ -152,6 +170,7 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
     this._flatpickr = null;
     this._submitHandler = null;
+    this._deleteButtonClickHandler = null;
 
     this._apllyFlatpickr();
     this._subscribeOnEvents();
@@ -165,8 +184,18 @@ export default class TaskEdit extends AbstractSmartComponent {
     });
   }
 
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
+  }
+
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -182,6 +211,28 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._isDateShowing = !!task.dueDate;
     this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
+
+    this.rerender();
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`.card__form`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__delete`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
+  }
+
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   _apllyFlatpickr() {
@@ -200,12 +251,6 @@ export default class TaskEdit extends AbstractSmartComponent {
         defaultDate: this._task.dueDate || `today`,
       });
     }
-  }
-
-  setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
-
-    this._submitHandler = handler;
   }
 
   _subscribeOnEvents() {
