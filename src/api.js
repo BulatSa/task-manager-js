@@ -1,3 +1,6 @@
+import Task from "./models/task.js";
+import Tasks from "./components/tasks.js";
+
 const API = class {
   constructor(authorization) {
     this._authorization = authorization;
@@ -9,7 +12,9 @@ const API = class {
 
     return fetch(`https://11.ecmascript.pages.academy/task-manager/tasks`, {
       headers,
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .then(Task.parseTask);
   }
 };
 
