@@ -1,13 +1,11 @@
+import API from "./api.js";
 import BoardComponent from "./components/board.js";
 import BoardController from "./controllers/board.js";
 import FilterController from "./controllers/filters.js";
 import SiteMenuComponent, { MenuItem } from "./components/site-menu.js";
 import StatisticComponent from "./components/statistics.js";
 import TasksModel from "./models/tasks.js";
-import { generateTasks } from "./mock/task.js";
 import { render, RenderPosition } from "./utils/render.js";
-
-const TASK_COUNT = 22;
 
 const dateTo = new Date();
 const dateFrom = (() => {
@@ -16,10 +14,8 @@ const dateFrom = (() => {
   return d;
 })();
 
-const tasks = generateTasks(TASK_COUNT);
+const api = new API();
 const tasksModel = new TasksModel();
-
-tasksModel.setTasks(tasks);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
@@ -37,7 +33,6 @@ const filterController = new FilterController(siteMainElement, tasksModel);
 render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
 filterController.render();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
-boardController.render();
 render(siteMainElement, statisticComponent, RenderPosition.BEFOREEND);
 statisticComponent.hide();
 
@@ -58,4 +53,9 @@ siteMenuComponent.setOnChange((menuItem) => {
       boardComponent.show();
       break;
   }
+});
+
+api.getTasks().then((tasks) => {
+  tasksModel.setTasks(tasks);
+  boardController.render();
 });
