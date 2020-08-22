@@ -1,5 +1,4 @@
 import Task from "./models/task.js";
-import Tasks from "./components/tasks.js";
 
 const API = class {
   constructor(authorization) {
