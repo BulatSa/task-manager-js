@@ -1,5 +1,6 @@
-import { getTasksByFilter } from "../utils/filter.js";
-import { FilterType } from "../const.js";
+import {getTasksByFilter} from "../utils/filter.js";
+import {FilterType} from "../const.js";
+
 
 export default class Tasks {
   constructor() {
@@ -35,7 +36,7 @@ export default class Tasks {
       return false;
     }
 
-    this._tasks = [].concat(this._tasks.slice(0, index), this.slice(index+1));
+    this._tasks = [].concat(this._tasks.slice(0, index), this._tasks.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
 
@@ -49,11 +50,7 @@ export default class Tasks {
       return false;
     }
 
-    this._tasks = [].concat(
-      this._tasks.slice(0, index),
-      task,
-      this._tasks.slice(index + 1)
-    );
+    this._tasks = [].concat(this._tasks.slice(0, index), task, this._tasks.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
 
