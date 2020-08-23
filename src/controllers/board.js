@@ -157,24 +157,30 @@ export default class BoardController {
         this._api.createTask(newData)
           .then((taskModel) => {
             this._tasksModel.addTask(taskModel);
-            taskController.render(taskModel, TaskControllerMode.DEFAULT)
-          });
+            taskController.render(taskModel, TaskControllerMode.DEFAULT);
 
-        if (this._showingTasksCount % SHOWING_TASKS_COUNT_BY_BUTTON === 0) {
-          const destroyedTask = this._showedTaskControllers.pop();
-          destroyedTask.destroy();
-        }
+            if (this._showingTasksCount % SHOWING_TASKS_COUNT_BY_BUTTON === 0) {
+              const destroyedTask = this._showedTaskControllers.pop();
+              destroyedTask.destroy();
+            }
 
-        this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
-        this._showingTasksCount = this._showedTaskControllers.length;
+            this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
+            this._showingTasksCount = this._showedTaskControllers.length;
 
-        this._renderLoadMoreButton();
+            this._renderLoadMoreButton();
+          })
+          .catch(() => {
+            taskController.shake();
+          })
       }
     } else if (newData === null) {
       this._api.deleteTask(oldData.id)
         .then(() => {
           this._tasksModel.removeTask(oldData.id);
           this._updateTasks(this._showingTasksCount);
+        })
+        .catch(() => {
+          taskController.shake();
         });
     } else {
       this._api.updateTask(oldData.id, newData)
@@ -185,6 +191,9 @@ export default class BoardController {
             taskController.render(taskModel, TaskControllerMode.DEFAULT);
             this._updateTasks(this._showingTasksCount);
           }
+        })
+        .catch(() => {
+          taskController.shake();
         });
     }
   }
