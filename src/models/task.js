@@ -1,5 +1,3 @@
-import Tasks from "../components/tasks";
-
 export default class Task {
   constructor(data) {
     this.id = data[`id`];

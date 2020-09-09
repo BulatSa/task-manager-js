@@ -1,5 +1,5 @@
 import Task from "../models/task.js";
-import Tasks from "../components/tasks.js";
+import { nanoid } from "nanoid";
 
 const isOnline = () => {
   return window.navigator.onLine;
@@ -27,10 +27,22 @@ export default class Provider {
 
   createTask(task) {
     if (isOnline()) {
-      return this._api.createTask(task);
+      return this._api.createTask(task).then((newTask) => {
+        this._store.setItem(newTask.id, newTask.toRAW());
+
+        return newTask;
+      });
     }
 
-    return Promise.reject(`offline`);
+    // Создаем локальный ID
+    const localNewTaskId = nanoid();
+    const localNewTask = Task.clone(
+      Object.assign(task, { id: localNewTaskId })
+    );
+
+    this._store.setItem(localNewTask.id, localNewTask.toRAW());
+
+    return Promise.resolve(localNewTask);
   }
 
   updateTask(id, task) {
@@ -51,8 +63,7 @@ export default class Provider {
 
   deleteTask(id) {
     if (isOnline()) {
-      return this._api.deleteTask(id)
-        .then(() => this._store.removeItem(id));
+      return this._api.deleteTask(id).then(() => this._store.removeItem(id));
     }
 
     this._store.removeItem(id);
