@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import { COLORS, DAYS } from "../const.js";
-import { formatTime, formatDate, isRepeating, isOverdueDate } from "../utils/common.js";
+import {COLORS, DAYS} from "../const.js";
+import {formatTime, formatDate, isRepeating, isOverdueDate} from "../utils/common.js";
 import flatpickr from "flatpickr";
 import {encode} from "he";
 
@@ -11,19 +11,21 @@ const MAX_DESCRIPTION_LENGTH = 140;
 
 const DefaultData = {
   deleteButtonText: `Delete`,
-  saveButtonText: `Save`
-}
+  saveButtonText: `Save`,
+};
 
 const isAllowableDescriptionLength = (description) => {
   const length = description.length;
 
-  return length >= MIN_DESCRIPTION_LENGTH && length <= MAX_DESCRIPTION_LENGTH;
-}
+  return length >= MIN_DESCRIPTION_LENGTH &&
+    length <= MAX_DESCRIPTION_LENGTH;
+};
 
 const createColorsMarkup = (colors, currentColor) => {
   return colors
     .map((color, index) => {
-      return `<input
+      return (
+        `<input
           type="radio"
           id="color-${color}-${index}"
           class="card__color-input card__color-input--${color} visually-hidden"
@@ -35,7 +37,8 @@ const createColorsMarkup = (colors, currentColor) => {
           for="color-${color}--${index}"
           class="card__color card__color--${color}"
           >${color}</label
-        >`;
+        >`
+      );
     })
     .join(`\n`);
 };
@@ -44,7 +47,8 @@ const createRepeatingDaysMarkup = (days, repeatingDays) => {
   return days
     .map((day, index) => {
       const isChecked = repeatingDays[day];
-      return `<input
+      return (
+        `<input
           class="visually-hidden card__repeat-day-input"
           type="checkbox"
           id="repeat-${day}-${index}"
@@ -54,41 +58,37 @@ const createRepeatingDaysMarkup = (days, repeatingDays) => {
         />
         <label class="card__repeat-day" for="repeat-${day}-${index}"
           >${day}</label
-        >`;
+        >`
+      );
     })
     .join(`\n`);
 };
 
 const createTaskEditTemplate = (task, options = {}) => {
-  const { dueDate, color } = task;
-  const { isDateShowing, isRepeatingTask, activeRepeatingDays, currentDescription, externalData} = options;
+  const {dueDate, color} = task;
+  const {isDateShowing, isRepeatingTask, activeRepeatingDays, currentDescription, externalData} = options;
 
   const description = encode(currentDescription);
 
   const isExpired = dueDate instanceof Date && isOverdueDate(dueDate, new Date());
-  const isBlockSaveButton =
+  const isBlockSaveButton = (isDateShowing && isRepeatingTask) ||
     (isRepeatingTask && !isRepeating(activeRepeatingDays)) ||
     !isAllowableDescriptionLength(description);
 
-  const date =
-    (isDateShowing && dueDate)
-      ? formatDate(dueDate)
-      : ``;
+  const date = (isDateShowing && dueDate) ? formatDate(dueDate) : ``;
   const time = (isDateShowing && dueDate) ? formatTime(dueDate) : ``;
 
   const repeatClass = isRepeatingTask ? `card--repeat` : ``;
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
   const colorsMarkup = createColorsMarkup(COLORS, color);
-  const repeatingDaysMarkup = createRepeatingDaysMarkup(
-    DAYS,
-    activeRepeatingDays
-  );
+  const repeatingDaysMarkup = createRepeatingDaysMarkup(DAYS, activeRepeatingDays);
 
   const deleteButtonText = externalData.deleteButtonText;
   const saveButtonText = externalData.saveButtonText;
 
-  return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
+  return (
+    `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
       <form class="card__form" method="get">
         <div class="card__inner">
           <div class="card__color-bar">
@@ -109,13 +109,9 @@ const createTaskEditTemplate = (task, options = {}) => {
             <div class="card__details">
               <div class="card__dates">
                 <button class="card__date-deadline-toggle" type="button">
-                  date: <span class="card__date-status">${
-                    isDateShowing ? `yes` : `no`
-                  }</span>
+                  date: <span class="card__date-status">${isDateShowing ? `yes` : `no`}</span>
                 </button>
-                ${
-                  isDateShowing
-                    ? `<fieldset class="card__date-deadline">
+                ${isDateShowing ? `<fieldset class="card__date-deadline">
                     <label class="card__input-deadline-wrap">
                       <input
                         class="card__date"
@@ -125,23 +121,15 @@ const createTaskEditTemplate = (task, options = {}) => {
                         value="${date} ${time}"
                       />
                     </label>
-                </fieldset>`
-                    : ``
-                }
+                </fieldset>` : ``}
                 <button class="card__repeat-toggle" type="button">
-                  repeat:<span class="card__repeat-status">${
-                    isRepeatingTask ? `yes` : `no`
-                  }</span>
+                  repeat:<span class="card__repeat-status">${isRepeatingTask ? `yes` : `no`}</span>
                 </button>
-                ${
-                  isRepeatingTask
-                    ? `<fieldset class="card__repeat-days">
+                ${isRepeatingTask ? `<fieldset class="card__repeat-days">
                     <div class="card__repeat-days-inner">
                       ${repeatingDaysMarkup}
                     </div>
-                  </fieldset>`
-                    : ``
-                }
+                  </fieldset>` : ``}
               </div>
               <div class="card__colors-inner">
                 <h3 class="card__colors-title">Color</h3>
@@ -152,15 +140,15 @@ const createTaskEditTemplate = (task, options = {}) => {
             </div>
           </div>
           <div class="card__status-btns">
-            <button class="card__save" type="submit" ${
-              isBlockSaveButton ? `disabled` : ``
-            }>${saveButtonText}</button>
+            <button class="card__save" type="submit" ${isBlockSaveButton ? `disabled` : ``}>${saveButtonText}</button>
             <button class="card__delete" type="button">${deleteButtonText}</button>
           </div>
         </div>
       </form>
-    </article>`;
+    </article>`
+  );
 };
+
 
 export default class TaskEdit extends AbstractSmartComponent {
   constructor(task) {
@@ -176,7 +164,7 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
 
-    this._apllyFlatpickr();
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -208,7 +196,7 @@ export default class TaskEdit extends AbstractSmartComponent {
   rerender() {
     super.rerender();
 
-    this._apllyFlatpickr();
+    this._applyFlatpickr();
   }
 
   reset() {
@@ -227,6 +215,18 @@ export default class TaskEdit extends AbstractSmartComponent {
     return new FormData(form);
   }
 
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
+  }
+
   setDeleteButtonClickHandler(handler) {
     this.getElement().querySelector(`.card__delete`)
       .addEventListener(`click`, handler);
@@ -234,18 +234,7 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
-  setData(data) {
-    this._externalData = Object.assign({}, DefaultData, data);
-    this.rerender();
-  }
-
-  setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
-
-    this._submitHandler = handler;
-  }
-
-  _apllyFlatpickr() {
+  _applyFlatpickr() {
     if (this._flatpickr) {
       // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
       // Что бы их удалять, нужно вызывать метод `destroy` у созданного инстанса `flatpickr`.
@@ -274,16 +263,14 @@ export default class TaskEdit extends AbstractSmartComponent {
         saveButton.disabled = !isAllowableDescriptionLength(this._currentDescription);
       });
 
-    element
-      .querySelector(`.card__date-deadline-toggle`)
+    element.querySelector(`.card__date-deadline-toggle`)
       .addEventListener(`click`, () => {
         this._isDateShowing = !this._isDateShowing;
 
         this.rerender();
       });
 
-    element
-      .querySelector(`.card__repeat-toggle`)
+    element.querySelector(`.card__repeat-toggle`)
       .addEventListener(`click`, () => {
         this._isRepeatingTask = !this._isRepeatingTask;
 

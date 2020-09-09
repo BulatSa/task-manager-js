@@ -4,7 +4,7 @@ const Method = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
-  DELETE: `DELETE`,
+  DELETE: `DELETE`
 };
 
 const checkStatus = (response) => {
@@ -22,12 +22,12 @@ const API = class {
   }
 
   getTasks() {
-    return this._load({ url: `tasks` })
+    return this._load({url: `tasks`})
       .then((response) => response.json())
       .then(Task.parseTasks);
   }
 
-  createTask() {
+  createTask(task) {
     return this._load({
       url: `tasks`,
       method: Method.POST,
@@ -39,14 +39,12 @@ const API = class {
   }
 
   updateTask(id, data) {
-    return this._load(
-      {
-        url: `tasks/${id}`,
-        method: Method.PUT,
-        body: JSON.stringify(data.toRAW()),
-        headers: new Headers({"Content-Type": `application/json`})
-      }
-    )
+    return this._load({
+      url: `tasks/${id}`,
+      method: Method.PUT,
+      body: JSON.stringify(data.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
       .then((response) => response.json())
       .then(Task.parseTask);
   }
@@ -55,10 +53,10 @@ const API = class {
     return this._load({url: `tasks/${id}`, method: Method.DELETE});
   }
 
-  _load({ url, method = Method.GET, body = null, headers = new Headers() }) {
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`${this._endPoint}/${url}`, { method, body, headers })
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
       .catch((err) => {
         throw err;
