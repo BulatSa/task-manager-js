@@ -4,7 +4,7 @@ const Method = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
-  DELETE: `DELETE`
+  DELETE: `DELETE`,
 };
 
 const checkStatus = (response) => {
@@ -22,7 +22,7 @@ const API = class {
   }
 
   getTasks() {
-    return this._load({url: `tasks`})
+    return this._load({ url: `tasks` })
       .then((response) => response.json())
       .then(Task.parseTasks);
   }
@@ -32,7 +32,7 @@ const API = class {
       url: `tasks`,
       method: Method.POST,
       body: JSON.stringify(task.toRAW()),
-      headers: new Headers({"Content-Type": `application/json`})
+      headers: new Headers({ "Content-Type": `application/json` }),
     })
       .then((response) => response.json())
       .then(Task.parseTask);
@@ -43,20 +43,29 @@ const API = class {
       url: `tasks/${id}`,
       method: Method.PUT,
       body: JSON.stringify(data.toRAW()),
-      headers: new Headers({"Content-Type": `application/json`})
+      headers: new Headers({ "Content-Type": `application/json` }),
     })
       .then((response) => response.json())
       .then(Task.parseTask);
   }
 
   deleteTask(id) {
-    return this._load({url: `tasks/${id}`, method: Method.DELETE});
+    return this._load({ url: `tasks/${id}`, method: Method.DELETE });
   }
 
-  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+  sync(data) {
+    return this._load({
+      url: `tasks/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({ "Content-Type": `application/json` }),
+    }).then((response) => response.json());
+  }
+
+  _load({ url, method = Method.GET, body = null, headers = new Headers() }) {
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+    return fetch(`${this._endPoint}/${url}`, { method, body, headers })
       .then(checkStatus)
       .catch((err) => {
         throw err;
