@@ -1,4 +1,5 @@
 import API from "./api/index.js";
+import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 import BoardComponent from "./components/board.js";
 import BoardController from "./controllers/board.js";
@@ -19,7 +20,8 @@ const dateFrom = (() => {
 })();
 
 const api = new API(END_POINT, AUTHORIZATION);
-const apiWithProvider = new Provider(api);
+const store = new Store();
+const apiWithProvider = new Provider(api, store);
 const tasksModel = new TasksModel();
 
 const siteMainElement = document.querySelector(`.main`);
@@ -32,7 +34,11 @@ const statisticComponent = new StatisticComponent({
 });
 
 const boardComponent = new BoardComponent();
-const boardController = new BoardController(boardComponent, tasksModel, apiWithProvider);
+const boardController = new BoardController(
+  boardComponent,
+  tasksModel,
+  apiWithProvider
+);
 const filterController = new FilterController(siteMainElement, tasksModel);
 
 render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
