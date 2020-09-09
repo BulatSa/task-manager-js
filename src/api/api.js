@@ -1,5 +1,4 @@
-import Task from "./models/task.js";
-import Tasks from "./components/tasks.js";
+import Task from "../models/task.js";
 
 const Method = {
   GET: `GET`,
